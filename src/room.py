@@ -16,11 +16,22 @@ class Room:
 
     def displayRoomsItems(self):
         print(f'Here you can see the following items:')
-        for item in self.items:
-            print(item)
+        if len(self.items) > 0:
+            for item in self.items:
+                print(item)
+        else:
+            print('None ')
 
     def addItemToRoom(self,item):
         self.items.append(item)
 
     def removeItemFromRoom(self,item):
-        self.items.remove(item)
+        searchedItem = self.findItem(item)
+        return self.items.pop(self.items.index(searchedItem))
+
+    def findItem(self,itemName):
+        tempObject = None
+        for itemObject in self.items:
+            if itemObject.name == itemName:
+                tempObject = itemObject
+        return tempObject

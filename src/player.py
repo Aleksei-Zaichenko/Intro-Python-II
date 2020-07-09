@@ -22,4 +22,12 @@ class Player():
         self.items.append(item)
 
     def removeItemFromInventory(self,item):
-        self.items.remove(item)
+        searchedItem = self.findItem(item)
+        return self.items.pop(self.items.index(searchedItem))
+
+    def findItem(self,itemName):
+        tempObject = None
+        for itemObject in self.items:
+            if itemObject.name == itemName:
+                tempObject = itemObject
+        return tempObject

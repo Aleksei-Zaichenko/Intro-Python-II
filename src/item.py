@@ -10,4 +10,4 @@ class Item:
         print(f'You have picked up {self.name}')
 
     def on_drop(self):
-        print(f'you have dropped off{self.name}')
+        print(f'you have dropped off {self.name}')

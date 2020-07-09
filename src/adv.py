@@ -22,10 +22,12 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
-items= {
+items = {
     'sword': Item('sword', 'very sharp and metally'),
-    'bag of food': Item('bag of food', 'very tasty and fulfilling'),
-    'coins': Item('coins', 'goldie stuff that we all love')
+    'food': Item('food', 'very tasty and fulfilling'),
+    'coins': Item('coins', 'goldie stuff that we all love'),
+    'grass': Item('grass', 'you got some grass on your way here'),
+    'beer': Item('beer', 'one of your favorites')
 }
 
 # Link rooms together
@@ -42,11 +44,16 @@ room['treasure'].s_to = room['narrow']
 #
 # Main
 #
-print(room['outside'])
+room['overlook'].addItemToRoom(items['food'])
+room['outside'].addItemToRoom(items['sword'])
+room['narrow'].addItemToRoom(items['coins'])
+# print(room['outside'].displayRoomsItems())
 
 # Make a new player object that is currently in the 'outside' room.
 
 player = Player('Alex', room['outside'])
+player.addItemToInventory(items['beer'])
+player.addItemToInventory(items['grass'])
 # Write a loop that:
 #
 # * Prints the current room name
@@ -64,13 +71,14 @@ while(userInput != 'q'):
     player.displayCurrentLocation()
     player.current_room.displayRoomsItems()
     player.current_room.displayDescription()
-    
+
     correct = False
-    directionsDictionary = {'n_to':player.current_room.n_to,'s_to':player.current_room.s_to, 'e_to':player.current_room.e_to, 'w_to':player.current_room.w_to,}
+    directionsDictionary = {'n_to': player.current_room.n_to, 's_to': player.current_room.s_to,
+                            'e_to': player.current_room.e_to, 'w_to': player.current_room.w_to, }
 
     while not correct:
         userInput = input(
-        "Enter which direction you want to go ( n, s, e, w), 'i' or 'inventory' to see your item and 'q' to quit: ")
+            "Enter which direction you want to go ( n, s, e, w), 'i' or 'inventory' to see your item and 'q' to quit: ")
 
         if len(userInput.split(' ')) == 1:
             roomDirection = userInput + '_to'
@@ -84,7 +92,16 @@ while(userInput != 'q'):
             else:
                 correct = True
         elif len(userInput.split(' ')) == 2:
-            if userInput == 'get' or userInput =='take':
-                pass
-            elif userInput == 'drop':
-                pass
+
+            userCommand = userInput.split(' ')
+
+            if userCommand[0] == 'get' or userCommand[1] == 'take':
+                print(userCommand[0], userCommand[1])
+                removedItemFromRoom = player.current_room.removeItemFromRoom(
+                    userCommand[1])
+                player.addItemToInventory(removedItemFromRoom)
+                removedItemFromRoom.on_take()
+            elif userCommand[0] == 'drop':
+                droppedItem = player.removeItemFromInventory(userCommand[1])
+                droppedItem.on_drop()
+                player.current_room.addItemToRoom(droppedItem)
