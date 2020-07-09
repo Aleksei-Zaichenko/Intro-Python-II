@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 # Declare all the rooms
 
 room = {
@@ -21,6 +22,11 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
+items= {
+    'sword': Item('sword', 'very sharp and metally'),
+    'bag of food': Item('bag of food', 'very tasty and fulfilling'),
+    'coins': Item('coins', 'goldie stuff that we all love')
+}
 
 # Link rooms together
 
@@ -36,6 +42,7 @@ room['treasure'].s_to = room['narrow']
 #
 # Main
 #
+print(room['outside'])
 
 # Make a new player object that is currently in the 'outside' room.
 
@@ -54,20 +61,30 @@ player = Player('Alex', room['outside'])
 userInput = None
 
 while(userInput != 'q'):
-    print(f'You are currently at: {player.current_room.name}')
-    print(f'{player.current_room.description}')
+    player.displayCurrentLocation()
+    player.current_room.displayRoomsItems()
+    player.current_room.displayDescription()
     
     correct = False
     directionsDictionary = {'n_to':player.current_room.n_to,'s_to':player.current_room.s_to, 'e_to':player.current_room.e_to, 'w_to':player.current_room.w_to,}
 
     while not correct:
         userInput = input(
-        "Enter which direction you want to go [n, s, e, w] or q to quit: ")
-        roomDirection = userInput + '_to'
-        if userInput != 'q' and directionsDictionary[roomDirection] != None:
-            player.current_room = directionsDictionary[roomDirection]
-            correct = True
-        elif userInput != 'q' and directionsDictionary[roomDirection] == None:
-            print('No road that direction')
-        else:
-            correct = True
+        "Enter which direction you want to go ( n, s, e, w), 'i' or 'inventory' to see your item and 'q' to quit: ")
+
+        if len(userInput.split(' ')) == 1:
+            roomDirection = userInput + '_to'
+            if userInput == 'i' or userInput == 'inventory':
+                player.displayPlayerItems()
+            elif userInput != 'q' and directionsDictionary[roomDirection] != None:
+                player.movePlayerToRoom(directionsDictionary[roomDirection])
+                correct = True
+            elif userInput != 'q' and directionsDictionary[roomDirection] == None:
+                print('No road that direction')
+            else:
+                correct = True
+        elif len(userInput.split(' ')) == 2:
+            if userInput == 'get' or userInput =='take':
+                pass
+            elif userInput == 'drop':
+                pass
